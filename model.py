@@ -75,7 +75,7 @@ def deleteDB(id):
         DELETE FROM student WHERE roll_no = %s
         """
 
-        cursor.execute(delete_query, id)
+        cursor.execute(delete_query, (id,))
         conn.commit()
     
     except mysql.Error as err:

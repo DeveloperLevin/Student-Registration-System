@@ -1,7 +1,7 @@
 from tkinter import *
 from tkinter import ttk
 from tkinter import messagebox
-from model import submitDB, intializeDB
+from model import submitDB, intializeDB, deleteDB
 
 root = Tk()
 root.geometry("1350x700")
@@ -43,7 +43,7 @@ def insert():
         roll, name, class_var, section, contact, father, address, gender, date = user_info
 
         # Check if any required field is empty
-        if not roll or not name or not class_var or not section or not father or not address or not gender or not date:
+        if not roll and not name and not class_var and not section and not father and not address and not gender and not date:
             raise ValueError("Please fill in all fields")
 
         # validation for contact number
@@ -58,18 +58,18 @@ def insert():
         submitDB(data)
 
 def delete():
-    user_info = get_data()
-
     try:
-        roll = user_info
+        roll = None
+        # conver roll and contact to integers
+        try:
+            roll = int(rollno_ent.get())
+        except ValueError as e:
+            messagebox.showerror("Error", str(e))
+            return
 
         # Check if any required field is empty
-        if not roll:
+        if roll is None:
             raise ValueError("Enter roll number")
-
-        # validation for contact number
-        if not len(contact_ent.get().strip()) == 10:
-            raise ValueError("Contact number is not valid")
 
     except ValueError as e:
         messagebox.showwarning("Warning", str(e))
@@ -81,7 +81,15 @@ def update():
     return
 
 def clear():
-    return
+    rollno_ent.delete(0, 'end')
+    name_ent.delete(0, 'end')
+    class_ent.delete(0, 'end')
+    section_ent.delete(0, 'end')
+    contact_ent.delete(0, 'end')
+    address_ent.delete(0, 'end')
+    gender_ent.delete(0, 'end')
+    father_ent.delete(0, 'end')
+    dob_ent.delete(0, 'end')
         
 #=========== Frames =================
 detail_frame = LabelFrame(root, text="Enter Details", font=("Ariel", 20), bd=12, relief=GROOVE, bg="lightgrey")

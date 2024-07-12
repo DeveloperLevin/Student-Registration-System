@@ -32,18 +32,62 @@ def intializeDB():
         conn.commit()
 
     except mysql.Error as err:
-        messagebox.showwarning("Error", str(e))
+        messagebox.showerror("Error", str(e))
+        conn.rollback()
 
     finally:
         cursor.close()
         conn.close()
 
 # Function to submit all entries to the database
-def submitDB():
+def submitDB(data):
     try:
         conn = get_db_connection()
         cursor = conn.cursor()
 
         #SQL query to insert into database
+        insert_query = """
+        INSERT INTO student(name, class, section, contact, father, address, gender, date)
+        VALUES(%d, %s, %s, %s, %d, %s, %s, %s, %s)
+        """
 
+        cursor.execute(insert_query, data)
+        conn.commit()
     
+    except mysql.Error as err:
+        messagebox.showerror("Error", str(err))
+        conn.rollback()
+
+    else:
+        messagebox.showinfo("Success", "Data Inserted Successfully")
+    
+    finally:
+        cursor.close()
+        conn.close()
+    
+def deleteDB(id):
+    try:
+        conn = get_db_connection()
+        cursor = conn.cursor()
+
+        #SQL query to insert into database
+        delete_query = """
+        DELETE FROM student WHERE roll_no = %s
+        """
+
+        cursor.execute(delete_query, id)
+        conn.commit()
+    
+    except mysql.Error as err:
+        messagebox.showerror("Error", str(err))
+        conn.rollback()
+
+    else:
+        messagebox.showinfo("Success", "Data Deleted Successfully")
+
+    finally:
+        cursor.close()
+        conn.close()
+
+def updateDB():
+    return

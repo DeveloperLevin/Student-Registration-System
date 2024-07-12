@@ -1,7 +1,7 @@
 from tkinter import *
 from tkinter import ttk
 from tkinter import messagebox
-from model import intializeDB
+from model import submitDB, intializeDB
 
 root = Tk()
 root.geometry("1350x700")
@@ -14,21 +14,58 @@ title_label.pack(side=TOP, fill=X)
 #=========== Database functions =======
 intializeDB()
 
-def insert():
+def get_data():
     try:
         roll = int(rollno_ent.get())
-        name = name_ent.get()
-        class_var = class_ent.get()
-        section = section_ent.get()
+        name = name_ent.get().lower()
+        class_var = class_ent.get().lower()
+        section = section_ent.get().lower()
         contact = int(contact_ent.get())
-        father = father_ent.get()
-        address = address_ent.get()
-        gender = gender_ent.get()
-        date = dob_ent.get()
+        father = father_ent.get().lower()
+        address = address_ent.get().lower()
+        gender = gender_ent.get().lower()
+        date = dob_ent.get().lower()
+        
+        return roll, name, class_var, section, contact, father, address, gender, date
+
+    except ValueError:
+        messagebox.showwarning("Warning", "Invalid input for roll number or contact")
+        return None
+
+
+def insert():
+    user_info = get_data()
+
+    if user_info is None:
+        return
+
+    try:
+        roll, name, class_var, section, contact, father, address, gender, date = user_info
 
         # Check if any required field is empty
         if not name or not class_var or not section or not father or not address or not gender or not date:
             raise ValueError("Please fill in all fields")
+
+        # validation for contact number
+        if not len(contact_ent.get()) == 10:
+            raise ValueError("Contact number is not valid")
+
+    except ValueError as e:
+        messagebox.showwarning("Warning", str(e))
+
+    else:
+        data = (roll, name, class_var, section, contact, father, address, gender, date)
+        submitDB(data)
+
+def delete():
+    user_info = get_data()
+
+    try:
+        roll = user_info[0]
+
+        # Check if any required field is empty
+        if not roll:
+            raise ValueError("Enter roll number")
 
         # validation for contact number
         if not contact_ent.get().isdigit() and len(contact_ent.get()) == 10:
@@ -38,14 +75,7 @@ def insert():
         messagebox.showwarning("Warning", str(e))
 
     else:
-        messagebox.showinfo("Success", "Date Inserted Successfully")
-
-    finally:
-        
-    
-
-def delete():
-    return
+        deleteDB(str(roll))
 
 def update():
     return

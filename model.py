@@ -47,8 +47,8 @@ def submitDB(data):
 
         #SQL query to insert into database
         insert_query = """
-        INSERT INTO student(name, class, section, contact, father, address, gender, date)
-        VALUES(%d, %s, %s, %s, %d, %s, %s, %s, %s)
+        INSERT INTO student(roll_no, name, class, section, contact, father, address, gender, dob)
+        VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s)
         """
 
         cursor.execute(insert_query, data)

@@ -16,11 +16,11 @@ intializeDB()
 
 def get_data():
     try:
-        roll = int(rollno_ent.get())
-        name = name_ent.get().lower()
-        class_var = class_ent.get().lower()
-        section = section_ent.get().lower()
-        contact = int(contact_ent.get())
+        roll = int(rollno_ent.get().strip())
+        name = name_ent.get().strip().lower()
+        class_var = class_ent.get().strip().lower()
+        section = section_ent.get().strip().lower()
+        contact = int(contact_ent.get().strip())
         father = father_ent.get().lower()
         address = address_ent.get().lower()
         gender = gender_ent.get().lower()
@@ -43,32 +43,32 @@ def insert():
         roll, name, class_var, section, contact, father, address, gender, date = user_info
 
         # Check if any required field is empty
-        if not name or not class_var or not section or not father or not address or not gender or not date:
+        if not roll or not name or not class_var or not section or not father or not address or not gender or not date:
             raise ValueError("Please fill in all fields")
 
         # validation for contact number
-        if not len(contact_ent.get()) == 10:
+        if not len(contact_ent.get().strip()) == 10:
             raise ValueError("Contact number is not valid")
 
     except ValueError as e:
         messagebox.showwarning("Warning", str(e))
 
     else:
-        data = (roll, name, class_var, section, contact, father, address, gender, date)
+        data = (str(roll), name, class_var, section, str(contact), father, address, gender, date)
         submitDB(data)
 
 def delete():
     user_info = get_data()
 
     try:
-        roll = user_info[0]
+        roll = user_info
 
         # Check if any required field is empty
         if not roll:
             raise ValueError("Enter roll number")
 
         # validation for contact number
-        if not contact_ent.get().isdigit() and len(contact_ent.get()) == 10:
+        if not len(contact_ent.get().strip()) == 10:
             raise ValueError("Contact number is not valid")
 
     except ValueError as e:

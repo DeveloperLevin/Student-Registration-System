@@ -1,7 +1,7 @@
 from tkinter import *
 from tkinter import ttk
 from tkinter import messagebox
-from model import submitDB, intializeDB, deleteDB
+from model import submitDB, intializeDB, deleteDB, updateDB
 
 root = Tk()
 root.geometry("1350x700")
@@ -78,7 +78,28 @@ def delete():
         deleteDB(str(roll))
 
 def update():
-    return
+    user_info = get_data()
+
+    if user_info is None:
+        return
+
+    try:
+        roll, name, class_var, section, contact, father, address, gender, date = user_info
+
+        # Check if any required field is empty
+        if not roll and not name and not class_var and not section and not father and not address and not gender and not date:
+            raise ValueError("Please fill in all fields")
+
+        # validation for contact number
+        if not len(contact_ent.get().strip()) == 10:
+            raise ValueError("Contact number is not valid")
+
+    except ValueError as e:
+        messagebox.showwarning("Warning", str(e))
+
+    else:
+        data = (str(roll), name, class_var, section, str(contact), father, address, gender, date, str(roll))
+        updateDB(data)
 
 def clear():
     rollno_ent.delete(0, 'end')

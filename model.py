@@ -89,5 +89,28 @@ def deleteDB(id):
         cursor.close()
         conn.close()
 
-def updateDB():
-    return
+def updateDB(data):
+    try:
+        conn = get_db_connection()
+        cursor = conn.cursor()
+
+        # SQL query to update all rows in the student table
+        update_query = """
+        UPDATE student
+        SET roll_no = %s, name = %s, class = %s, section = %s, contact = %s, father = %s, address = %s, gender = %s, dob = %s
+        WHERE roll_no = %s
+        """
+
+        cursor.execute(update_query, data)
+        conn.commit()
+
+    except mysql.Error as err:
+        messagebox.showerror("Error", str(err))
+        conn.rollback()
+
+    else:
+        messagebox.showinfo("Success", "Data updated Successfully")
+
+    finally:
+        cursor.close()
+        conn.close()

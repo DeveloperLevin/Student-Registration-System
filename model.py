@@ -126,6 +126,29 @@ def search_db():
 
         cursor.execute(search_query)
         data = cursor.fetchall() # fetches all rows of the query result
+
+    except mysql.Error as err:
+        messagebox.showerror("Error", str(err))
+    
+    finally:
+        if 'cursor' in locals() and cursor is not None:
+            cursor.close()
+        if 'conn' in locals() and conn is not None:
+            conn.close()
+    
+    return data
+
+def complex_search_db(key, value):
+    data = None
+
+    try:
+        conn = get_db_connection()
+        cursor = conn.cursor()
+
+        search_query = f"SELECT * FROM student WHERE {key} = %s;"
+
+        cursor.execute(search_query, (value,))
+        data = cursor.fetchall() # fetches all rows of the query result
         print(data)
 
     except mysql.Error as err:

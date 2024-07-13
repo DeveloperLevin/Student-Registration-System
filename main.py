@@ -1,7 +1,7 @@
 from tkinter import *
 from tkinter import ttk
 from tkinter import messagebox
-from model import submitDB, intializeDB, deleteDB, updateDB, search_db
+from model import submitDB, intializeDB, deleteDB, updateDB, search_db, complex_search_db
 
 root = Tk()
 root.geometry("1350x700")
@@ -112,7 +112,10 @@ def clear():
     dob_ent.delete(0, 'end')
         
 def search():
-    selected_option = search_by.get()
+    student_table.delete(*student_table.get_children())
+
+    selected_option = search_by.get().lower()
+    condition_var = ""
     # checks if any values was passed to the combobox, if none retrieve all relevant data about all students in the table
     if selected_option == "":
         data = search_db()
@@ -121,7 +124,16 @@ def search():
             for row in data:
                 student_table.insert(parent='', index='end', iid=row[0], values=row) 
     else:
-        pass
+        try:
+            condition_var = eval(selected_option + "_ent.get()")
+        except:
+            messagebox.showerror("Error", "Search Failed")
+        # pass parameters to return data with satisfying the condition
+        data = complex_search_db(selected_option, condition_var)
+
+        if data:
+            for row in data:
+                student_table.insert(parent="", index='end', iid=row[0], values=row)
 
 
 #=========== Frames =================
@@ -221,7 +233,7 @@ search_for['values'] = ("Name",
                         "Class",
                         "Section",
                         "Gender",
-                        "Date of Birth") 
+                        "D.O.B") 
 
 search_btn= Button(search_frame, text="Search", font=("Ariel", 12), command=search)
 search_btn.grid(row=0, column=4, padx=2, pady=2)

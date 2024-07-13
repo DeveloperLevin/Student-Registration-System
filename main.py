@@ -1,7 +1,7 @@
 from tkinter import *
 from tkinter import ttk
 from tkinter import messagebox
-from model import submitDB, intializeDB, deleteDB, updateDB
+from model import submitDB, intializeDB, deleteDB, updateDB, search_db
 
 root = Tk()
 root.geometry("1350x700")
@@ -31,7 +31,6 @@ def get_data():
     except ValueError:
         messagebox.showwarning("Warning", "Invalid input for roll number or contact")
         return None
-
 
 def insert():
     user_info = get_data()
@@ -112,6 +111,19 @@ def clear():
     father_ent.delete(0, 'end')
     dob_ent.delete(0, 'end')
         
+def search():
+    selected_option = search_by.get()
+    # checks if any values was passed to the combobox, if none retrieve all relevant data about all students in the table
+    if selected_option == "":
+        data = search_db()
+        # if the query returns entries
+        if data:
+            for row in data:
+                student_table.insert(parent='', index='end', iid=row[0], values=row) 
+    else:
+        pass
+
+
 #=========== Frames =================
 detail_frame = LabelFrame(root, text="Enter Details", font=("Ariel", 20), bd=12, relief=GROOVE, bg="lightgrey")
 detail_frame.place(x=20, y=90, width=420, height=575)
@@ -211,7 +223,7 @@ search_for['values'] = ("Name",
                         "Gender",
                         "Date of Birth") 
 
-search_btn= Button(search_frame, text="Search", font=("Ariel", 12))
+search_btn= Button(search_frame, text="Search", font=("Ariel", 12), command=search)
 search_btn.grid(row=0, column=4, padx=2, pady=2)
 
 #===============Result and tree views=====================
@@ -222,7 +234,7 @@ main_frame.place(x=20, y=90, width=800, height=450)
 y_scroll = Scrollbar(data_frame, orient=VERTICAL)
 x_scroll = Scrollbar(data_frame, orient=HORIZONTAL)
 
-student_table = ttk.Treeview(main_frame, columns=("Roll no", "Name", "Class", "Section", "Contact", "Father Name", "gender", "D.O.B", "Address"), yscrollcommand=y_scroll.set, xscrollcommand=x_scroll.set)
+student_table = ttk.Treeview(main_frame, columns=("Roll no", "Name", "Class", "Section", "Contact", "Father Name", "Address", "gender", "D.O.B"), yscrollcommand=y_scroll.set, xscrollcommand=x_scroll.set)
 
 y_scroll.config(command=student_table.yview)
 x_scroll.config(command=student_table.xview)
@@ -230,6 +242,7 @@ x_scroll.config(command=student_table.xview)
 y_scroll.pack(side=RIGHT, fill=Y)
 x_scroll.pack(side=BOTTOM, fill=X)
 
+# makes the colms have a relatable heading - honestly in this case its quite useless
 student_table.heading("Roll no", text="Roll no")
 student_table.heading("Name", text="Name")
 student_table.heading("Class", text="Class")
@@ -237,8 +250,9 @@ student_table.heading("Section", text="Section")
 student_table.heading("Contact", text="Contact")
 student_table.heading("Father Name", text="Father's Name")
 student_table.heading("gender", text="Gender")
-student_table.heading("D.O.B", text="D.O.B")
 student_table.heading("Address", text="Address")
+student_table.heading("D.O.B", text="D.O.B")
+
 
 student_table['show'] = 'headings'
 
@@ -253,8 +267,6 @@ student_table.column("D.O.B", width=100)
 student_table.column("Address", width=100)
 
 student_table.pack(fill=BOTH, expand=True)
-
-#======================================================
 #================= get all values =====================
 
 if __name__ == '__main__':
